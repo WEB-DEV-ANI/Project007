@@ -23,7 +23,14 @@ class CustomerResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')->required(),
+                Forms\Components\TextInput::make('email')->email()->required(),
+                Forms\Components\TextInput::make('phone')->required(),
+                Forms\Components\RichEditor::make('address')->required(),
+                Forms\Components\TextInput::make('city')->required(),
+                Forms\Components\TextInput::make('state')->required(),
+                Forms\Components\TextInput::make('status')->required(),
+                Forms\Components\FileUpload::make('profile_picture')->disk('local')->directory('form-attachments')->visibility('private'),
             ]);
     }
 
