@@ -1,0 +1,20 @@
+
+<h1>Project Overview</h1>
+
+leads module
+customer feilds-> HEIGHT,WEIGHT, ANY MEDICAL CONDITION , GOAL, BMI , PLAN , PLAN FREQUENCY 
+PLANS module
+SERVICES
+SECHEDULING
+PAYMENT CRYSTAL_METH
+Trainers
+
+
+reshuduling one time only with authentication with admin 
+
+no contact with trainer directly
+
+
+<h1>important commands</h1>
+
+php artisan make:filament-resource Lead --model --migration --generate    //for creating a new resource with model and migration

@@ -18,7 +18,8 @@ class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationLabel = 'Customers';
 
     public static function form(Form $form): Form
     {
@@ -27,11 +28,12 @@ class CustomerResource extends Resource
                 Forms\Components\TextInput::make('name')->required(),
                 Forms\Components\TextInput::make('email')->email()->required(),
                 Forms\Components\TextInput::make('phone')->required(),
-                Forms\Components\RichEditor::make('address')->required(),
                 Forms\Components\TextInput::make('city')->required(),
                 Forms\Components\TextInput::make('state')->required(),
                 Forms\Components\TextInput::make('status')->required(),
                 Forms\Components\FileUpload::make('profile_picture')->disk('local')->directory('form-attachments')->visibility('private'),
+                Forms\Components\RichEditor::make('address')->required(),
+
             ]);
     }
 
@@ -51,7 +53,21 @@ class CustomerResource extends Resource
             
             ])
             ->filters([
-                // Add any filters here
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                    ]),
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from'),
+                        Forms\Components\DatePicker::make('created_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['created_from'], fn ($query, $date) => $query->whereDate('created_at', '>=', $date))
+                            ->when($data['created_until'], fn ($query, $date) => $query->whereDate('created_at', '<=', $date));
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -61,4 +77,13 @@ class CustomerResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
+ public static function getPages(): array
+{
+    return [
+        'index' => Pages\ListCustomers::route('/'),
+        'create' => Pages\CreateCustomer::route('/create'),
+        'edit' => Pages\EditCustomer::route('/{record}/edit'),
+    ];
+}
+
 }
